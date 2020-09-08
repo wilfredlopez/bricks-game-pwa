@@ -23,7 +23,7 @@ export function buildLevel(game: Game, levels: Level[]) {
 
 
 export const level0: Level[] = [
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
 ]
 
 export const level1: Level[] = [
