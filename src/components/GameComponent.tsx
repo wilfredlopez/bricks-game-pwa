@@ -1,6 +1,6 @@
 import React from 'react'
 import './game.css'
-import Game from './game/Game'
+import Game, { GAMESTATES } from './game/Game'
 
 //CONFIG
 const CANVASWIDTH = 800
@@ -27,15 +27,17 @@ function cancelTick() {
         cancelAnimationFrame(tick)
     }
 }
-function start(ctx: CanvasRenderingContext2D) {
-    const game = new Game(CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
+let game: Game | undefined = undefined
+function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+    game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
+
     cancelTick()
     function gameLoop(timestamp: number) {
         let deltaTime = timestamp - lastTime
         lastTime = timestamp
         ctx.clearRect(0, 0, CANVASWIDTH, CANVASWIDTH)
-        game.update(deltaTime)
-        game.draw(ctx)
+        game!.update(deltaTime)
+        game!.draw(ctx)
         tick = requestAnimationFrame(gameLoop)
     }
     tick = requestAnimationFrame(gameLoop)
@@ -56,6 +58,7 @@ interface GameInfo {
     state: string
     level: number
     totalLevels: number
+    isStarted: boolean
 }
 
 
@@ -73,32 +76,50 @@ function shouldRerenderGameInfo(currentInfo: GameInfo, newInfo: GameInfo) {
     return false
 }
 
+const DEFAULT_GAME_INFO: GameInfo = {
+    livesLeft: 5,
+    state: "START",
+    level: 1,
+    totalLevels: 0,
+    totalLives: 0,
+    isStarted: false
+}
+
+
+const CanvasStyles = {
+    border: '1px solid #928c8c',
+    margin: '0 12px'
+}
+
+
 const GameComponent = (props: Props) => {
     const CanvasEl = React.useRef<HTMLCanvasElement>(null)
 
-    //MAYBE A REF React.useRef ?
-    const [gameInfo, setGameInfo] = React.useState<GameInfo>({
-        livesLeft: 5,
-        state: "START",
-        level: 1,
-        totalLevels: 0,
-        totalLives: 0
-    })
+    const [i, s] = React.useState<GameInfo>(DEFAULT_GAME_INFO)
+    const { gameInfo, setGameInfo } = React.useMemo(() =>
+        ({
+            gameInfo: i,
+            setGameInfo: s
+        })
+        , [
+            i, s
+        ])
 
     const Init = React.useCallback(() => {
         const ctx = CanvasEl.current!.getContext('2d')!
-        const game = start(ctx)
+        const game = start(ctx, CanvasEl.current!)
+
         game.onChange((updatedGame) => {
             const newInfo: GameInfo = {
                 livesLeft: updatedGame.livesLeft,
                 state: updatedGame.gameState,
                 level: updatedGame.currentLevel,
                 totalLevels: updatedGame.totalLevels,
-                totalLives: updatedGame.totalGameLives
+                totalLives: updatedGame.totalGameLives,
+                isStarted: updatedGame.isStarted
             }
             if (shouldRerenderGameInfo(gameInfo, newInfo))
             {
-
                 setGameInfo(() => (newInfo))
             }
         })
@@ -111,6 +132,20 @@ const GameComponent = (props: Props) => {
         //eslint-disable-next-line
     }, [])
 
+
+
+    function handleStart() {
+        if (game)
+        {
+            game.start()
+        }
+    }
+    function handlePause() {
+        if (game)
+        {
+            game.togglePause()
+        }
+    }
 
     return (
         <>
@@ -132,9 +167,19 @@ const GameComponent = (props: Props) => {
             </div>
             <img src={BallImageUrl} id={BallImageId} style={ImageStyle} aria-hidden="true" alt="ball" />
             <img src={BrickImageUrl} id={BrickImageId} style={ImageStyle} aria-hidden="true" alt="brick" />
-            <canvas id='game-screen' ref={CanvasEl} width={CANVASWIDTH} height={CANVASHEIGHT}>
+            <canvas
+                ref={CanvasEl}
+                width={CANVASWIDTH}
+                height={CANVASHEIGHT}
+                style={CanvasStyles}
+            >
 
             </canvas>
+            <div className="controls">
+
+                <button className="btn start" onClick={handleStart} disabled={gameInfo.isStarted}>Start Game</button>
+                <button className="btn pause" onClick={handlePause} disabled={gameInfo.state === GAMESTATES.MENU}>Toggle Pause</button>
+            </div>
             <div className="key-shortcuts-info">
                 <h5>KEYBOARD SHORTCUTS</h5>
                 <ShortCutItem shortcut="ENTER or 1" description={'Start Game'} />

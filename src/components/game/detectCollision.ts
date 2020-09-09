@@ -22,3 +22,33 @@ export default function detectCollision(ballOrBrick: GameObject, gameObject: Gam
     }
     return false
 }
+
+
+interface PositionObject {
+    x: number, y: number, height: number, width: number
+}
+export function detectCollisionOnObject(objectToCheck: PositionObject, paddleOrObject: PositionObject) {
+
+    //Object collition
+
+    //TOP
+    const bottom = objectToCheck.y + objectToCheck.height
+    const top = objectToCheck.y
+    const topOfObject = paddleOrObject.y
+    const bottomOfObject = paddleOrObject.y + paddleOrObject.height
+
+    //LEFT/RIGHT
+    const leftSideOfObject = paddleOrObject.x
+    const rightSideOfObject = paddleOrObject.x + paddleOrObject.width
+
+
+    if (
+        bottom >= topOfObject &&
+        top <= bottomOfObject &&
+        objectToCheck.x >= leftSideOfObject &&
+        objectToCheck.x + objectToCheck.width <= rightSideOfObject)
+    {
+        return true
+    }
+    return false
+}

@@ -25,10 +25,10 @@
   }
   
 
-#game-screen{
+/* #game-screen{
     border: 1px solid #928c8c;
     margin: 0 12px;
-}
+} */
 
 
 .key-shortcuts-info {
@@ -99,4 +99,10 @@ p.right-s {
 p.equal-s {
     text-align: center;
     flex: 1;
+}
+
+
+.controls{
+  display: flex;
+    justify-content: center;
 }

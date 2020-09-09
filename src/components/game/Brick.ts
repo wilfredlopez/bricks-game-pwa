@@ -22,7 +22,12 @@ export default class Brick extends GameObject {
         this.gameHeight = game.gameHeight
         this.image = document.getElementById(this.imageId) as HTMLImageElement
     }
-    update(deltaTime: number) {
+
+    /**
+     * 
+     * @param _ deltaTime
+     */
+    update(_: number) {
         if (detectCollision(this.game.ball!, this))
         {
             this.game.ball!.speed.y = - this.game.ball!.speed.y

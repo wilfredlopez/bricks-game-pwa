@@ -1,9 +1,9 @@
+import { throttle } from '@wilfredlopez/react-utils'
 import Ball from "./Ball"
 import Brick from "./Brick"
 import GameObject from "./GameObject"
 import InputHandler from "./InputHandler"
 import Paddle from "./Paddle"
-import { throttle } from '@wilfredlopez/react-utils'
 import { buildLevel, level0, Level, level1, level2, level3 } from './levels'
 
 
@@ -30,7 +30,7 @@ export default class Game {
     paddle: Paddle
     bricks: Brick[]
     lives: number
-    constructor(public gameWidth: number, public gameHeight: number, public BallImageId: string, public BrickImageId: string) {
+    constructor(public canvas: HTMLCanvasElement, public gameWidth: number, public gameHeight: number, public BallImageId: string, public BrickImageId: string) {
         this.bricks = []
         this._gameState = GAMESTATES.MENU
         this.paddle = new Paddle(this)
@@ -38,6 +38,15 @@ export default class Game {
         this.lives = this.totalGameLives
         this._levels = [level0, level1, level2, level3]
         new InputHandler(this, this.paddle)
+    }
+
+
+    get isStarted() {
+        return this.gameState !== GAMESTATES.MENU
+    }
+
+    get isActive() {
+        return this.gameState !== GAMESTATES.MENU && this.gameState !== GAMESTATES.PAUSED && this.gameState !== GAMESTATES.GAMEOVER
     }
 
     get currentLevel() {
@@ -104,7 +113,11 @@ export default class Game {
 
 
     update(deltaTime: number) {
-        this._callEvents()
+        if (this.isActive)
+        {
+
+            this._callEvents()
+        }
         if (this.lives === 0) this._gameState = GAMESTATES.GAMEOVER
         if (this._gameState === GAMESTATES.PAUSED ||
             this._gameState === GAMESTATES.MENU ||
