@@ -31,18 +31,16 @@ function cancelTick() {
     }
 }
 let game: Game | undefined = undefined
-
-
-
-
+let oldWidth = CANVASWIDTH
 function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     window.addEventListener('resize', () => {
         // const snapshot = ctx.getImageData(0, 0, CANVASWIDTH, CANVASHEIGHT)
         CANVASWIDTH = getWidth()
-        if (game)
+        if (game && CANVASWIDTH !== oldWidth)
         {
             game.resetWidth(CANVASWIDTH)
         }
+        oldWidth = CANVASWIDTH
         // ctx.putImageData(snapshot, 0, 0)
     })
     game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
@@ -171,6 +169,12 @@ const GameComponent = (props: Props) => {
 
     React.useLayoutEffect(() => {
         Init()
+        return () => {
+            if (game)
+            {
+                game.close()
+            }
+        }
         //eslint-disable-next-line
     }, [])
 

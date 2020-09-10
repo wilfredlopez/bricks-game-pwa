@@ -45,6 +45,23 @@ export default class Game {
     }
 
 
+    close() {
+        this.inputHandler.removeEventListeners()
+    }
+
+    restart() {
+        this._currentLevel = 0
+        this._outcome = "YOU LOST"
+        this.bricks = []
+        this._gameState = GAMESTATES.MENU
+        this.paddle = new Paddle(this)
+        this.ball = new Ball(this)
+        this.lives = this.totalGameLives
+        this._levels = [level0, level1, level2, level3]
+        this.buildLevels()
+    }
+
+
     resetWidth(width: number) {
         this.gameWidth = width
         this.paddle.gameWidth = width
@@ -98,18 +115,6 @@ export default class Game {
 
 
 
-
-    restart() {
-        this._currentLevel = 0
-        this._outcome = "YOU LOST"
-        this.bricks = []
-        this._gameState = GAMESTATES.MENU
-        this.paddle = new Paddle(this)
-        this.ball = new Ball(this)
-        this.lives = this.totalGameLives
-        this._levels = [level0, level1, level2, level3]
-        this.buildLevels()
-    }
 
     private buildLevels() {
         const level = this._levels[this._currentLevel]

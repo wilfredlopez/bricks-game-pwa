@@ -59,8 +59,8 @@
   }
   
   .game-info-container{
-    border: 1px solid #343333;
-    border-style: inset;
+    /* border: 1px solid #343333;
+    border-style: inset; */
     background: black;
     color: white;
     padding: 12px;
@@ -90,6 +90,7 @@
           padding: 0 0 !important;
           line-height: 16px;
           width: 100%;
+          text-align: left;
       }
       #game-screen{
           margin:0;
