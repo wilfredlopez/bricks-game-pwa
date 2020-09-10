@@ -3,14 +3,19 @@ import './game.css'
 import Game, { GAMESTATES } from './game/Game'
 
 //CONFIG
-const cw = document.body.clientWidth
 
-const CANVASWIDTH = Math.min(cw, 800)
+let CANVASWIDTH = getWidth()
+
 const CANVASHEIGHT = 600
 const BallImageUrl = "/assets/ball.png"
 const BallImageId = 'ball-image'
 const BrickImageUrl = "/assets/brick.png"
 const BrickImageId = 'brick-image'
+
+function getWidth() {
+    const cw = document.body.clientWidth
+    return Math.min(cw, 800)
+}
 
 interface Props {
 
@@ -32,7 +37,9 @@ let game: Game | undefined = undefined
 
 function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
 
-
+    document.addEventListener('resize', () => {
+        CANVASWIDTH = getWidth()
+    })
     game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
 
     cancelTick()
