@@ -33,6 +33,7 @@ export default class Game {
     paddle: Paddle
     bricks: Brick[]
     lives: number
+    inputHandler: InputHandler
     constructor(public canvas: HTMLCanvasElement, public gameWidth: number, public gameHeight: number, public BallImageId: string, public BrickImageId: string) {
         this.bricks = []
         this._gameState = GAMESTATES.MENU
@@ -40,7 +41,16 @@ export default class Game {
         this.ball = new Ball(this)
         this.lives = this.totalGameLives
         this._levels = [level0, level1, level2, level3]
-        new InputHandler(this, this.paddle)
+        this.inputHandler = new InputHandler(this, this.paddle, true)
+    }
+
+
+    updateWidth(width: number) {
+        this.gameWidth = width
+        this.paddle.gameWidth = width
+        this.ball.gameWidth = width
+        this.inputHandler.paddle = this.paddle
+        this.inputHandler.game.gameWidth = this.gameWidth
     }
 
 

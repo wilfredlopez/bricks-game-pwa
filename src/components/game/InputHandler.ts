@@ -13,7 +13,14 @@ const RightListeners: { [key: string]: string } = {
 export default class InputHandler {
     private isDragging = false
     private mouse = { x: 0, y: 0 }
-    constructor(public game: Game, public paddle: Paddle) {
+    constructor(public game: Game, public paddle: Paddle, autoStart = false) {
+        if (autoStart)
+        {
+            this.start()
+        }
+    }
+
+    start() {
         this.addkeyDownListener()
         this.addkeyUpListener()
         this.addMouseDownListener()
@@ -22,10 +29,16 @@ export default class InputHandler {
     }
 
 
+    removeEvents() {
+        document.removeEventListener('mousedown', this.onMouseDown.bind(this), false)
+        document.removeEventListener('mouseup', this.mouseUp.bind(this), false)
+        document.removeEventListener('mousemove', this.mouseMove.bind(this), false)
+        document.removeEventListener('keyup', this.onKeyUp)
+        document.addEventListener('keydown', this.onKeyDown)
+    }
 
 
-
-    setMouse(evt: MouseEvent) {
+    private setMouse(evt: MouseEvent) {
         const canvas = this.game.canvas
         const { left, top } = canvas.getBoundingClientRect()
         this.mouse = {
@@ -41,11 +54,13 @@ export default class InputHandler {
      * Handle DragStart
      */
     addMouseDownListener() {
-        document.addEventListener('mousedown', (evt) => {
-            this.setMouse(evt)
-            this.isDragging = true
-            this.calcMove()
-        }, false)
+        document.addEventListener('mousedown', this.onMouseDown.bind(this), false)
+    }
+
+    private onMouseDown(evt: MouseEvent) {
+        this.setMouse(evt)
+        this.isDragging = true
+        this.calcMove()
     }
 
 
@@ -54,34 +69,35 @@ export default class InputHandler {
      * Handle DragStop
      */
     addMouseUpListener() {
-        document.addEventListener('mouseup', (evt) => {
-            this.isDragging = false
-            // this.setMouseCoordinates(evt)
-            this.mouse = { x: 0, y: 0 }
-            this.paddle.stop()
-
-        }, false)
+        document.addEventListener('mouseup', this.mouseUp.bind(this), false)
     }
 
+    private mouseUp(evt: MouseEvent) {
+        this.isDragging = false
+        // this.setMouseCoordinates(evt)
+        this.mouse = { x: 0, y: 0 }
+        this.paddle.stop()
+    }
     /**
      * handle Drag
      */
     addMouseMoveListener() {
-        document.addEventListener('mousemove', (evt) => {
-            this.setMouse(evt)
-            if (this.isDragging)
-            {
-                this.calcMove()
-            } else
-            {
-
-                this.paddle.stop()
-            }
-
-        }, false)
+        document.addEventListener('mousemove', this.mouseMove.bind(this), false)
     }
 
-    calcMove() {
+    private mouseMove(evt: MouseEvent) {
+        this.setMouse(evt)
+        if (this.isDragging)
+        {
+            this.calcMove()
+        } else
+        {
+
+            this.paddle.stop()
+        }
+    }
+
+    private calcMove() {
         const mouse = this.mouse
         const paddle = this.paddle
         if (this.isDragging && paddle.isInside(mouse))
@@ -96,53 +112,52 @@ export default class InputHandler {
     }
 
 
-
-
-
-
     //KEYBOARD EVENTS
-
     addkeyUpListener() {
-        document.addEventListener('keyup', (evt) => {
-            switch (evt.key)
-            {
-                case LeftListeners[evt.key]:
-                    if (this.paddle.speed < 0) this.paddle.stop()
-                    break;
-                case RightListeners[evt.key]:
-                    if (this.paddle.speed > 0) this.paddle.stop()
-                    break;
-                default:
-                    break;
-            }
-        })
+        document.addEventListener('keyup', this.onKeyUp.bind(this))
+    }
+
+    private onKeyUp(evt: KeyboardEvent) {
+        switch (evt.key)
+        {
+            case LeftListeners[evt.key]:
+                if (this.paddle.speed < 0) this.paddle.stop()
+                break;
+            case RightListeners[evt.key]:
+                if (this.paddle.speed > 0) this.paddle.stop()
+                break;
+            default:
+                break;
+        }
     }
 
 
     addkeyDownListener() {
-        document.addEventListener('keydown', (evt) => {
-            switch (evt.key)
-            {
-                case LeftListeners[evt.key]:
-                    this.paddle.moveLeft()
-                    break;
-                case RightListeners[evt.key]:
-                    this.paddle.moveRight()
-                    break;
-                case 'Escape':
-                case ' ':
-                    this.game.togglePause()
-                    break;
-                case 'Enter':
-                case '1':
-                    this.game.start()
-                    break;
-                case 'R':
-                    this.game.restart()
-                    break;
-                default:
-                    break;
-            }
-        })
+        document.addEventListener('keydown', this.onKeyDown.bind(this))
+    }
+
+    private onKeyDown(evt: KeyboardEvent) {
+        switch (evt.key)
+        {
+            case LeftListeners[evt.key]:
+                this.paddle.moveLeft()
+                break;
+            case RightListeners[evt.key]:
+                this.paddle.moveRight()
+                break;
+            case 'Escape':
+            case ' ':
+                this.game.togglePause()
+                break;
+            case 'Enter':
+            case '1':
+                this.game.start()
+                break;
+            case 'R':
+                this.game.restart()
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -37,8 +37,15 @@ let game: Game | undefined = undefined
 
 function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
 
-    document.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
+        // const snapshot = ctx.getImageData(0, 0, CANVASWIDTH, CANVASHEIGHT)
         CANVASWIDTH = getWidth()
+        console.log('resize')
+        if (game)
+        {
+            game.updateWidth(CANVASWIDTH)
+        }
+        // ctx.putImageData(snapshot, 0, 0)
     })
     game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
 
