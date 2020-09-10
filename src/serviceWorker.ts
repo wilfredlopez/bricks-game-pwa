@@ -1,4 +1,4 @@
-const VERSION = '0.0.1'
+const VERSION = '1.0.0'
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
