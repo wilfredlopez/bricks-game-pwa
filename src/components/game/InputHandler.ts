@@ -11,16 +11,15 @@ const RightListeners: { [key: string]: string } = {
 }
 
 export default class InputHandler {
-    private isDragging = false
     private mouse = { x: 0, y: 0 }
-    constructor(public game: Game, public paddle: Paddle, autoStart = false) {
-        if (autoStart)
+    constructor(public game: Game, public paddle: Paddle, autoAddEventListeners = true) {
+        if (autoAddEventListeners)
         {
-            this.start()
+            this.addEventListeners()
         }
     }
 
-    start() {
+    addEventListeners() {
         this.addkeyDownListener()
         this.addkeyUpListener()
         this.addMouseDownListener()
@@ -29,23 +28,37 @@ export default class InputHandler {
     }
 
 
-    removeEvents() {
+    removeEventListeners() {
         document.removeEventListener('mousedown', this.onMouseDown.bind(this), false)
         document.removeEventListener('mouseup', this.mouseUp.bind(this), false)
         document.removeEventListener('mousemove', this.mouseMove.bind(this), false)
-        document.removeEventListener('keyup', this.onKeyUp)
-        document.addEventListener('keydown', this.onKeyDown)
+        document.removeEventListener('keyup', this.onKeyUp.bind(this))
+        document.removeEventListener('keydown', this.onKeyDown.bind(this))
+        document.removeEventListener('touchend', this.onMouseDown.bind(this), false)
+        document.removeEventListener('touchstart', this.mouseUp.bind(this), false)
+        document.removeEventListener('touchmove', this.mouseMove.bind(this), false)
     }
 
 
-    private setMouse(evt: MouseEvent) {
+    private setMouse(evt: MouseEvent | TouchEvent) {
         const canvas = this.game.canvas
         const { left, top } = canvas.getBoundingClientRect()
-        this.mouse = {
-            x: evt.clientX - left,
-            y: evt.clientY - top
-        }
+        let x = 0
+        let y = 0
+        if (evt instanceof (TouchEvent))
+        {
 
+            x = evt.changedTouches[0].clientX || 0
+            y = evt.changedTouches[0]?.clientY || 0
+        } else
+        {
+            x = evt.clientX
+            y = evt.clientY
+        }
+        this.mouse = {
+            x: x - left,
+            y: y - top
+        }
         return this.mouse
     }
 
@@ -55,11 +68,11 @@ export default class InputHandler {
      */
     addMouseDownListener() {
         document.addEventListener('mousedown', this.onMouseDown.bind(this), false)
+        document.addEventListener('touchend', this.onMouseDown.bind(this), false)
     }
 
-    private onMouseDown(evt: MouseEvent) {
+    private onMouseDown(evt: MouseEvent | TouchEvent) {
         this.setMouse(evt)
-        this.isDragging = true
         this.calcMove()
     }
 
@@ -70,37 +83,33 @@ export default class InputHandler {
      */
     addMouseUpListener() {
         document.addEventListener('mouseup', this.mouseUp.bind(this), false)
+        document.addEventListener('touchstart', this.mouseUp.bind(this), false)
+
     }
 
-    private mouseUp(evt: MouseEvent) {
-        this.isDragging = false
-        // this.setMouseCoordinates(evt)
-        this.mouse = { x: 0, y: 0 }
-        this.paddle.stop()
+    private mouseUp(evt: MouseEvent | TouchEvent) {
+        this.setMouse(evt)
+        this.calcMove()
+        // this.mouse = { x: 0, y: 0 }
+        // this.paddle.stop()
     }
     /**
      * handle Drag
      */
     addMouseMoveListener() {
         document.addEventListener('mousemove', this.mouseMove.bind(this), false)
+        document.addEventListener('touchmove', this.mouseMove.bind(this), false)
     }
 
-    private mouseMove(evt: MouseEvent) {
+    private mouseMove(evt: MouseEvent | TouchEvent) {
         this.setMouse(evt)
-        if (this.isDragging)
-        {
-            this.calcMove()
-        } else
-        {
-
-            this.paddle.stop()
-        }
+        this.calcMove()
     }
 
     private calcMove() {
         const mouse = this.mouse
         const paddle = this.paddle
-        if (this.isDragging && paddle.isInside(mouse))
+        if (paddle.isInside(mouse))
         {
 
             paddle.x = mouse.x - (paddle.width / 2)

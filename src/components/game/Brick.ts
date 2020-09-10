@@ -20,6 +20,8 @@ export default class Brick extends GameObject {
         this.imageId = game.BrickImageId
         this.gameWidth = game.gameWidth
         this.gameHeight = game.gameHeight
+        this.position.x = this.position.x % this.gameWidth
+        this.position.y = this.position.y % this.gameHeight
         this.image = document.getElementById(this.imageId) as HTMLImageElement
     }
 

@@ -5,13 +5,14 @@ export type Level = [number, number, number, number, number, number, number, num
 
 export function buildLevel(game: Game, levels: Level[]) {
     const bricks: Brick[] = []
+    const alpha = 75
     levels.forEach((row, rowIndex) => {
         row.forEach((n, nIndex) => {
             if (n === 1)
             {
                 let position = {
                     x: Brick.BrickWidth * nIndex,
-                    y: 75 + Brick.BrickHeight * rowIndex
+                    y: alpha + Brick.BrickHeight * rowIndex
                 }
                 bricks.push(new Brick(game, position))
             }

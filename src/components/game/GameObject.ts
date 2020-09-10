@@ -34,7 +34,7 @@ export default abstract class GameObject {
                     y: object.y,
                     // height: 2,
                     height: object.height || 20, //giving room
-                    width: object.width || 1
+                    width: object.width || 4
                 },
                 this)
 

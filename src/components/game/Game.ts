@@ -17,8 +17,8 @@ export const GAMESTATES = {
 
 const FONT_FAMILY = 'Press Start 2P'
 
-const FONT_SIZE_LG = 25
-const FONT_SIZE_MD = 18
+const FONT_SIZE_LG = 22
+const FONT_SIZE_MD = 16
 
 export type GameState = typeof GAMESTATES[keyof typeof GAMESTATES]
 
@@ -45,12 +45,14 @@ export default class Game {
     }
 
 
-    updateWidth(width: number) {
+    resetWidth(width: number) {
         this.gameWidth = width
         this.paddle.gameWidth = width
         this.ball.gameWidth = width
         this.inputHandler.paddle = this.paddle
         this.inputHandler.game.gameWidth = this.gameWidth
+        this.gameObjects = [this.paddle, this.ball]
+        this.ball.reset()
     }
 
 
@@ -105,11 +107,11 @@ export default class Game {
         this.paddle = new Paddle(this)
         this.ball = new Ball(this)
         this.lives = this.totalGameLives
-        this.start()
+        this._levels = [level0, level1, level2, level3]
+        this.buildLevels()
     }
 
-    start() {
-        if (this._gameState !== GAMESTATES.MENU && this._gameState !== GAMESTATES.NEWLEVEL) return
+    private buildLevels() {
         const level = this._levels[this._currentLevel]
         if (!level)
         {
@@ -124,6 +126,19 @@ export default class Game {
         this._gameState = GAMESTATES.RUNNING
     }
 
+    start() {
+        if (this._gameState !== GAMESTATES.MENU && this._gameState !== GAMESTATES.NEWLEVEL) return
+        this.buildLevels()
+    }
+
+    private checkBricks() {
+        if (this.bricks.length === 0)
+        {
+            this._currentLevel++
+            this._gameState = GAMESTATES.NEWLEVEL
+            this.start()
+        }
+    }
 
     update(deltaTime: number) {
         if (this.isActive)
@@ -140,19 +155,13 @@ export default class Game {
             return
         }
 
-        if (this.bricks.length === 0)
-        {
-            this._currentLevel++
-            this._gameState = GAMESTATES.NEWLEVEL
-            this.start()
-        }
-
 
         for (let gameObject of [...this.gameObjects, ...this.bricks])
         {
             gameObject.update(deltaTime)
         }
         this.bricks = this.bricks.filter(obj => !obj.markedForDeletion)
+        this.checkBricks()
     }
 
     togglePause() {
@@ -190,7 +199,12 @@ export default class Game {
             ctx.font = `${FONT_SIZE_LG}px '${FONT_FAMILY}'`
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
-            ctx.fillText('Press ENTER or 1 To Start', this.gameWidth / 2, this.gameHeight / 2)
+            const centerx = this.gameWidth / 2
+            const centery = this.gameHeight / 2
+            const distance = 40
+            ctx.fillText('Press ENTER', centerx, centery - distance)
+            ctx.fillText('Or Press 1', centerx, centery)
+            ctx.fillText('To Start', centerx, centery + distance)
         }
         if (this._gameState === GAMESTATES.GAMEOVER)
         {
@@ -202,11 +216,15 @@ export default class Game {
             ctx.font = `${FONT_SIZE_LG}px '${FONT_FAMILY}'`
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
-            const middleX = this.gameWidth / 2
-            const middleY = this.gameHeight / 2
-            ctx.fillText(`GAMEOVER ${this._outcome}.`, middleX, middleY)
+
+            const centerx = this.gameWidth / 2
+            const centery = this.gameHeight / 2
+            const distance = 40
+            ctx.fillText(`GAMEOVER`, centerx, centery - distance)
+            ctx.fillText(`${this._outcome}.`, centerx, centery)
             ctx.font = `${FONT_SIZE_MD}px '${FONT_FAMILY}'`
-            ctx.fillText(`Press R (shift + r) to restart`, middleX, middleY + 50)
+            ctx.fillText(`Press R`, centerx, centery + distance)
+            ctx.fillText(`to restart`, centerx, centery + distance * 2)
         }
     }
 

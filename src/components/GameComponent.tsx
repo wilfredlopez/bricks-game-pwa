@@ -36,21 +36,19 @@ let game: Game | undefined = undefined
 
 
 function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-
     window.addEventListener('resize', () => {
         // const snapshot = ctx.getImageData(0, 0, CANVASWIDTH, CANVASHEIGHT)
         CANVASWIDTH = getWidth()
-        console.log('resize')
         if (game)
         {
-            game.updateWidth(CANVASWIDTH)
+            game.resetWidth(CANVASWIDTH)
         }
         // ctx.putImageData(snapshot, 0, 0)
     })
     game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
 
-    cancelTick()
     function gameLoop(timestamp: number) {
+        cancelTick()
         let deltaTime = timestamp - lastTime
         lastTime = timestamp
         ctx.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT)
@@ -126,6 +124,12 @@ function handlePause() {
 }
 
 
+function handleRestart() {
+    if (game)
+    {
+        game.restart()
+    }
+}
 
 
 
@@ -209,6 +213,7 @@ const GameComponent = (props: Props) => {
 
                 <button className="btn start" onClick={handleStart} disabled={gameInfo.isStarted}>Start Game</button>
                 <button className="btn pause" onClick={handlePause} disabled={gameInfo.state === GAMESTATES.MENU}>Toggle Pause</button>
+                <button className="btn start" onClick={handleRestart} disabled={gameInfo.state === GAMESTATES.MENU} >Restart</button>
             </div>
             <div className="key-shortcuts-info">
                 <h5>KEYBOARD SHORTCUTS</h5>
