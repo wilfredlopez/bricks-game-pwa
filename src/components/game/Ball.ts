@@ -4,7 +4,7 @@ import GameObject from "./GameObject"
 
 export default class Ball extends GameObject {
     image: HTMLImageElement
-    speed = { x: 2, y: -2 }
+    speed = { x: 3, y: -2 }
     position = { x: 10, y: 400 }
     width = 16
     height = 16
@@ -12,7 +12,7 @@ export default class Ball extends GameObject {
     ballImageId: string
     gameWidth: number
     gameHeight: number
-    levelSpeed = 3
+    levelSpeed = 4
     speedIncrementor = 0.8
     constructor(public game: Game) {
         super()

@@ -17,6 +17,9 @@ export const GAMESTATES = {
 
 const FONT_FAMILY = 'Press Start 2P'
 
+const FONT_SIZE_LG = 25
+const FONT_SIZE_MD = 18
+
 export type GameState = typeof GAMESTATES[keyof typeof GAMESTATES]
 
 export default class Game {
@@ -163,7 +166,7 @@ export default class Game {
             ctx.rect(0, 0, this.gameWidth, this.gameHeight)
             ctx.fillStyle = 'rgba(0,0,0,0.5)'
             ctx.fill()
-            ctx.font = `30px '${FONT_FAMILY}'`
+            ctx.font = `${FONT_SIZE_LG}px '${FONT_FAMILY}'`
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
             ctx.fillText('Paused', this.gameWidth / 2, this.gameHeight / 2)
@@ -174,7 +177,7 @@ export default class Game {
             ctx.rect(0, 0, this.gameWidth, this.gameHeight)
             ctx.fillStyle = 'rgba(0,0,0,1)'
             ctx.fill()
-            ctx.font = `30px '${FONT_FAMILY}'`
+            ctx.font = `${FONT_SIZE_LG}px '${FONT_FAMILY}'`
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
             ctx.fillText('Press ENTER or 1 To Start', this.gameWidth / 2, this.gameHeight / 2)
@@ -186,13 +189,13 @@ export default class Game {
             ctx.rect(0, 0, this.gameWidth, this.gameHeight)
             ctx.fillStyle = color
             ctx.fill()
-            ctx.font = `30px '${FONT_FAMILY}'`
+            ctx.font = `${FONT_SIZE_LG}px '${FONT_FAMILY}'`
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
             const middleX = this.gameWidth / 2
             const middleY = this.gameHeight / 2
             ctx.fillText(`GAMEOVER ${this._outcome}.`, middleX, middleY)
-            ctx.font = `20px '${FONT_FAMILY}'`
+            ctx.font = `${FONT_SIZE_MD}px '${FONT_FAMILY}'`
             ctx.fillText(`Press R (shift + r) to restart`, middleX, middleY + 50)
         }
     }

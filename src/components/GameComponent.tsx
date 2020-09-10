@@ -3,7 +3,9 @@ import './game.css'
 import Game, { GAMESTATES } from './game/Game'
 
 //CONFIG
-const CANVASWIDTH = 800
+const cw = document.body.clientWidth
+
+const CANVASWIDTH = Math.min(cw, 800)
 const CANVASHEIGHT = 600
 const BallImageUrl = "/assets/ball.png"
 const BallImageId = 'ball-image'
@@ -13,10 +15,6 @@ const BrickImageId = 'brick-image'
 interface Props {
 
 }
-
-// function clear(ctx: CanvasRenderingContext2D) {
-//     ctx.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT)
-// }
 
 let lastTime = 0
 let tick: number | undefined
@@ -28,14 +26,20 @@ function cancelTick() {
     }
 }
 let game: Game | undefined = undefined
+
+
+
+
 function start(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+
+
     game = new Game(canvas, CANVASWIDTH, CANVASHEIGHT, BallImageId, BrickImageId)
 
     cancelTick()
     function gameLoop(timestamp: number) {
         let deltaTime = timestamp - lastTime
         lastTime = timestamp
-        ctx.clearRect(0, 0, CANVASWIDTH, CANVASWIDTH)
+        ctx.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT)
         game!.update(deltaTime)
         game!.draw(ctx)
         tick = requestAnimationFrame(gameLoop)
@@ -78,7 +82,7 @@ function shouldRerenderGameInfo(currentInfo: GameInfo, newInfo: GameInfo) {
 
 const DEFAULT_GAME_INFO: GameInfo = {
     livesLeft: 5,
-    state: "START",
+    state: GAMESTATES.MENU,
     level: 1,
     totalLevels: 0,
     totalLives: 0,
@@ -88,8 +92,28 @@ const DEFAULT_GAME_INFO: GameInfo = {
 
 const CanvasStyles = {
     border: '1px solid #928c8c',
-    margin: '0 12px'
+    margin: '0 auto',
+    width: CANVASWIDTH,
+    height: CANVASHEIGHT,
+    background: 'white'
 }
+
+function handleStart() {
+    if (game)
+    {
+        game.start()
+    }
+}
+function handlePause() {
+    if (game)
+    {
+        game.togglePause()
+    }
+}
+
+
+
+
 
 
 const GameComponent = (props: Props) => {
@@ -134,18 +158,7 @@ const GameComponent = (props: Props) => {
 
 
 
-    function handleStart() {
-        if (game)
-        {
-            game.start()
-        }
-    }
-    function handlePause() {
-        if (game)
-        {
-            game.togglePause()
-        }
-    }
+
 
     return (
         <>
@@ -167,14 +180,17 @@ const GameComponent = (props: Props) => {
             </div>
             <img src={BallImageUrl} id={BallImageId} style={ImageStyle} aria-hidden="true" alt="ball" />
             <img src={BrickImageUrl} id={BrickImageId} style={ImageStyle} aria-hidden="true" alt="brick" />
-            <canvas
-                ref={CanvasEl}
-                width={CANVASWIDTH}
-                height={CANVASHEIGHT}
-                style={CanvasStyles}
-            >
+            <div id="canvas-container">
 
-            </canvas>
+                <canvas
+                    ref={CanvasEl}
+                    width={CANVASWIDTH}
+                    height={CANVASHEIGHT}
+                    style={CanvasStyles}
+                >
+
+                </canvas>
+            </div>
             <div className="controls">
 
                 <button className="btn start" onClick={handleStart} disabled={gameInfo.isStarted}>Start Game</button>

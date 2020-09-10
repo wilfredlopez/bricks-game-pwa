@@ -8,12 +8,23 @@
     overflow: hidden;
   }
 
+
+#canvas-container{
+  background: black;
+    width: 100%;
+    display: flex;
+    margin-left: 12px;
+    margin-right: 12px;
+    max-width: 900px;
+}
+
   .game-title{
     text-align: center;
     margin: 0;
       font-family: cursive;
       font-size: 22px;
       margin-bottom: 0px;
+      width: 100%;
       /* margin-top: 8px; */
       padding-top: 8px;
       overflow: hidden;
@@ -29,7 +40,12 @@
     border: 1px solid #928c8c;
     margin: 0 12px;
 } */
-
+.game-info-bar{
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 23px;
+  width: 90%;
+}
 
 .key-shortcuts-info {
     width: 90%;
@@ -49,6 +65,7 @@
     color: white;
     padding: 12px;
     margin: 0 12px;
+    width: 100%;
     font-family: 'Press Start 2P';
     font-size: 15px;
     text-align: center;
@@ -60,6 +77,11 @@
         text-align: center;
         margin:0;
       }
+      #canvas-container{
+        background: black;
+          margin-left: 0px;
+          margin-right: 0px;
+      }
       .game-title{
           margin-left: 0;
           margin-right: 0;
@@ -67,6 +89,7 @@
       .game-info-bar{
           padding: 0 0 !important;
           line-height: 16px;
+          width: 100%;
       }
       #game-screen{
           margin:0;
@@ -105,4 +128,14 @@ p.equal-s {
 .controls{
   display: flex;
     justify-content: center;
+}
+
+.game-controls{
+  margin: 0 12px;
+    text-align: center;
+    padding: 6px;
+}
+.game-controls button{
+  margin-left: 40px;
+    margin-right: 40px;
 }

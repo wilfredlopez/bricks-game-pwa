@@ -1,5 +1,8 @@
 import Game from "./Game"
 import GameObject from "./GameObject"
+// const p = new p5(()=> document.createElement('canvas'))
+
+
 
 export default class Paddle extends GameObject {
     position: { x: number, y: number }
@@ -44,10 +47,19 @@ export default class Paddle extends GameObject {
     }
 
     moveLeft() {
-        this.speed = -this.maxSpeed
+        // this.speed = -this.maxSpeed
+        this.moveBy(-this.maxSpeed)
     }
     moveRight() {
-        this.speed = this.maxSpeed
+        // this.speed = this.maxSpeed
+        this.moveBy(this.maxSpeed)
+    }
+
+    moveBy(speed: number) {
+        this.speed = speed
+    }
+
+    clicked(mx: number, my: number) {
 
     }
 }
