@@ -32,11 +32,11 @@ export default class InputHandler {
         document.removeEventListener('mousedown', this.onMouseDown.bind(this), false)
         document.removeEventListener('mouseup', this.mouseUp.bind(this), false)
         document.removeEventListener('mousemove', this.mouseMove.bind(this), false)
-        document.removeEventListener('keyup', this.onKeyUp.bind(this))
-        document.removeEventListener('keydown', this.onKeyDown.bind(this))
         document.removeEventListener('touchend', this.onMouseDown.bind(this), false)
         document.removeEventListener('touchstart', this.mouseUp.bind(this), false)
         document.removeEventListener('touchmove', this.mouseMove.bind(this), false)
+        document.removeEventListener('keyup', this.onKeyUp.bind(this))
+        document.removeEventListener('keydown', this.onKeyDown.bind(this))
     }
 
 

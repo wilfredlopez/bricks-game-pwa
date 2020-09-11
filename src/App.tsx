@@ -1,17 +1,9 @@
 import React from 'react';
-import GameComponent from './components/GameComponent'
+import { Routes } from './Routes';
 
 function App() {
   return (
-    <div>
-      <div className='game-container'>
-        <GameComponent />
-      </div>
-      <div className="footer-info">
-        <p>By Wilfred Lopez</p>
-        <a href="https://github.com/wilfredlopez/">Github @WilfredLopez</a>
-      </div>
-    </div>
+    <Routes />
   );
 }
 

@@ -15,6 +15,24 @@ code {
 
 
 
+.container{
+  max-width: 900px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-center{
+  text-align: center;
+}
+
+.d-flex{
+  display: flex;
+}
+.justify-content-center{
+  justify-content: center;
+}
+
 
 .footer-info{
   margin: 12px;
@@ -97,4 +115,12 @@ code {
 .btn-sm{
   min-width: 60px;
   padding: 8px 8px;
+}
+
+.btn-orange{
+  background-color: darkorange;
+}
+
+.btn-orange:hover{
+  background-color: rgb(218, 122, 6);
 }
